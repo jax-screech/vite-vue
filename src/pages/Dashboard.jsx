@@ -14,7 +14,7 @@ const Dashboard = () => {
     const getMovies = async () => {
       try {
         const data = await fetchTrendingMovies()
-        setMovies(data.slice(0, 12))
+        setMovies(data)
       } catch (err) {
         console.error('Error fetching trending movies:', err)
       } finally {

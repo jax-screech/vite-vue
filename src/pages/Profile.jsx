@@ -1,67 +1,32 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 
 const Profile = () => {
-  const [profile, setProfile] = useState(null)
-  const [avatar, setAvatar] = useState(null)
-
-  const fetchProfile = async () => {
-    const token = localStorage.getItem('access')
-    const res = await axios.get('http://127.0.0.1:8000/api/auth/profile/', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    setProfile(res.data)
-  }
-
-  const handleAvatarUpload = async (e) => {
-    const formData = new FormData()
-    formData.append('avatar', e.target.files[0])
-
-    const token = localStorage.getItem('access')
-
-    await axios.put('http://127.0.0.1:8000/api/auth/profile/', formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-
-    fetchProfile()
-  }
+  const [user, setUser] = useState(null)
 
   useEffect(() => {
-    fetchProfile()
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
   }, [])
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center text-white text-xl">
+        No user found. Please login.
+      </div>
+    )
+  }
+
   return (
-    <div className="text-white p-6">
-      <h1 className="text-3xl font-bold mb-4">Profile</h1>
-
-      {profile && (
-        <div>
-          <img
-            src={
-              profile.avatar
-                ? `http://127.0.0.1:8000${profile.avatar}`
-                : '/default-avatar.png'
-            }
-            alt="avatar"
-            className="w-32 h-32 rounded-full object-cover mb-4"
-          />
-
-          <p><strong>Username:</strong> {profile.username}</p>
-          <p><strong>Email:</strong> {profile.email}</p>
-          <p><strong>Password:</strong> {profile.password}</p>
-
-          <input
-            type="file"
-            onChange={handleAvatarUpload}
-            className="mt-4 text-white"
-          />
-        </div>
-      )}
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6">
+      <img
+        src={user.avatar}
+        alt="User Avatar"
+        className="w-32 h-32 rounded-full border-4 border-red-600 mb-6"
+      />
+      <h1 className="text-3xl font-bold mb-2">{user.name}</h1>
+      <p className="text-lg text-gray-300">{user.email}</p>
     </div>
   )
 }

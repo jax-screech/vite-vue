@@ -1,27 +1,25 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Landing from './pages/Landing'
+import {  BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
-import ForgotPassword from './pages/Forgot-password'
-import WatchMovie from './pages/Warchmovies'
-import ResetPassword from './pages/ResetPassword'
 import Profile from './pages/Profile'
+import ForgotPassword from './pages/ForgotPassword'
+import Landing from './pages/Landing'
+import WatchMovie from './pages/Warchmovies'
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path='/dashboard' element={<Dashboard />} />
-        <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/watch/:id' element={<WatchMovie />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path='/profile' element={<Profile />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/watch/:id" element={<WatchMovie />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   )
 }
 

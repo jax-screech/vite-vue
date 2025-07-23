@@ -1,120 +1,99 @@
-import { useState } from 'react'
+// src/pages/Login.jsx
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import background from '../assets/vitevuebg.jpeg'
 
 const Login = () => {
-  const [formData, setFormData] = useState({ username: '', password: '' })
-  const [message, setMessage] = useState(null)
   const navigate = useNavigate()
+  const [formData, setFormData] = useState({ email: '', password: '' })
+  const [message, setMessage] = useState(null)
 
-  const handleChange = (e) => {
+  const handleGoogleLogin = () => {
+  alert('Google login is not implemented yet.')
+}
+
+
+  const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     try {
       const res = await axios.post('http://127.0.0.1:8000/api/auth/login/', formData)
-      localStorage.setItem('access', res.data.access)
-      localStorage.setItem('refresh', res.data.refresh)
+      const { access, user } = res.data
+
+      localStorage.setItem('accessToken', access)
+      localStorage.setItem('user', JSON.stringify(user))
+
       navigate('/dashboard')
     } catch (err) {
-      setMessage('Login successful! Redirecting...');
-      setTimeout(() => {
-        setMessage(null);
-        navigate('/dashboard');
-      }, 1200);
+      console.error('Login error:', err.response?.data || err.message)
+      setMessage('Invalid credentials. Please try again.')
     }
   }
 
-  const [showPassword, setShowPassword] = useState(false)
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) navigate('/dashboard')
+  }, [navigate])
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center text-white"
-      style={{
-        backgroundImage: `url(${background})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
+      className="min-h-screen flex items-center justify-center bg-cover bg-center"
+      style={{ backgroundImage: `url(${background})` }}
     >
-      {/* Header with logo on the right */}
-      <header className="flex justify-between items-center px-6 py-4 w-full absolute top-0 left-0">
-        <div></div>
-        <h1
-          className="text-3xl font-bold text-red-600 cursor-pointer"
-          onClick={() => navigate('/')}
-        >
-          ViteVue
-        </h1>
-      </header>
+      <div className="bg-black bg-opacity-80 p-10 rounded-lg shadow-lg text-white w-full max-w-md">
+        <h2 className="text-3xl font-bold mb-6 text-center">Login to ViteVue</h2>
 
-      <div className="bg-black bg-opacity-80 p-10 rounded-lg shadow-md w-full max-w-md mx-auto mt-10">
-        <h2 className="text-3xl font-bold mb-6 text-center">Sign In to ViteVue</h2>
+        {message && (
+          <div className="bg-red-600 text-white p-3 rounded mb-4 text-center">
+            {message}
+          </div>
+        )}
 
-        {message && <div className="bg-red-600 text-white p-3 rounded mb-4 text-center">{message}</div>}
-
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={formData.username}
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email ?? ''}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:border-red-500"
+            className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded focus:outline-none"
           />
-
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:border-red-500 pr-12"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white text-sm"
-              tabIndex={-1}
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
-          </div>
-
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded focus:outline-none"
+          />
           <button
             type="submit"
             className="w-full py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded"
           >
-            Sign In
+            Login
           </button>
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full py-3 bg-blue-400 hover:bg-blue-700 text-white font-bold rounded"
+        >
+          Sign in with Google
+        </button>
         </form>
 
-        <p className="mt-6 text-center text-gray-300 text-sm">
+        <p className="mt-4 text-sm text-center text-gray-300">
           Don’t have an account?{' '}
           <button
+            className="text-red-500 hover:underline"
             onClick={() => navigate('/register')}
-            className="text-red-500 hover:underline font-medium"
           >
-            Sign Up
+            Sign up
           </button>
         </p>
-        
-        <p className="mt-6 text-center text-gray-300 text-sm">
-          <button
-            onClick={() => navigate('/forgot-password')}
-            className="ml-4 text-red-500 hover:underline font-medium"
-            type="button"
-          >
-            Forgot Password?
-          </button>
-        </p>
-        
       </div>
     </div>
   )
