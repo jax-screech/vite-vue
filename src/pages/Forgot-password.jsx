@@ -18,9 +18,9 @@ const ForgotPassword = () => {
       await axios.post('http://127.0.0.1:8000/api/auth/forgot-password/', {
         email,
       })
-      setMessage('If this email exists, a password reset link has been sent.')
+      setMessage('This email exists in our database, a password reset link has been sent.')
     } catch (err) {
-      setMessage('Something went wrong. Please try again.')
+      setMessage('Sorry we could not find this email in our database.')
     } finally {
       setLoading(false)
     }

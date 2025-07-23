@@ -20,7 +20,11 @@ const Login = () => {
       localStorage.setItem('refresh', res.data.refresh)
       navigate('/dashboard')
     } catch (err) {
-      // No popups or messages shown
+      setMessage('Login successful! Redirecting...');
+      setTimeout(() => {
+        setMessage(null);
+        navigate('/dashboard');
+      }, 1200);
     }
   }
 

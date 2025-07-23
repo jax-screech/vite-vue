@@ -112,44 +112,51 @@ const Landing = () => {
           </div>
         )}
       </div>
-      <footer className="bg-black py-8 mt-1 border-t border-gray-800">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 text-gray-400 text-sm">
-          <div>
-            <h5 className="text-white font-bold mb-3">ViteVue</h5>
-            <p className="mb-2">Your destination for the latest movies and TV shows. Stream anywhere, anytime.</p>
-            <div className="flex gap-3 mt-3">
-              <a href="#" aria-label="Twitter" className="hover:text-white"><i className="fab fa-twitter"></i></a>
-              <a href="#" aria-label="Facebook" className="hover:text-white"><i className="fab fa-facebook"></i></a>
-              <a href="#" aria-label="Instagram" className="hover:text-white"><i className="fab fa-instagram"></i></a>
+      {/* Netflix-style Footer */}
+      <footer className="bg-[#141414] text-[#757575] py-10 px-4 border-t border-[#222]">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-6 text-center md:text-left">
+            <a href="tel:0800-000-000" className="hover:underline">Questions? Call 0800-000-000</a>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-sm">
+            <div>
+              <ul>
+                <li className="mb-3"><a href="#" className="hover:underline">FAQ</a></li>
+                <li className="mb-3"><a href="#" className="hover:underline">Investor Relations</a></li>
+                <li className="mb-3"><a href="#" className="hover:underline">Privacy</a></li>
+                <li className="mb-3"><a href="#" className="hover:underline">Speed Test</a></li>
+              </ul>
+            </div>
+            <div>
+              <ul>
+                <li className="mb-3"><a href="#" className="hover:underline">Help Center</a></li>
+                <li className="mb-3"><a href="#" className="hover:underline">Jobs</a></li>
+                <li className="mb-3"><a href="#" className="hover:underline">Cookie Preferences</a></li>
+                <li className="mb-3"><a href="#" className="hover:underline">Legal Notices</a></li>
+              </ul>
+            </div>
+            <div>
+              <ul>
+                <li className="mb-3"><a href="#" className="hover:underline">Account</a></li>
+                <li className="mb-3"><a href="#" className="hover:underline">Ways to Watch</a></li>
+                <li className="mb-3"><a href="#" className="hover:underline">Corporate Information</a></li>
+                <li className="mb-3"><a href="#" className="hover:underline">Only on ViteVue</a></li>
+              </ul>
+            </div>
+            <div>
+              <ul>
+                <li className="mb-3"><a href="#" className="hover:underline">Media Center</a></li>
+                <li className="mb-3"><a href="#" className="hover:underline">Terms of Use</a></li>
+                <li className="mb-3"><a href="#" className="hover:underline">Contact Us</a></li>
+              </ul>
             </div>
           </div>
-          <div>
-            <h5 className="text-white font-bold mb-3">Company</h5>
-            <ul>
-              <li className="mb-2"><a href="#" className="hover:text-white">About Us</a></li>
-              <li className="mb-2"><a href="#" className="hover:text-white">Careers</a></li>
-              <li className="mb-2"><a href="#" className="hover:text-white">Press</a></li>
-            </ul>
+          <div className="mb-6">
+            <button className="border border-[#333] px-4 py-2 rounded text-xs bg-transparent hover:bg-[#222]">English</button>
           </div>
-          <div>
-            <h5 className="text-white font-bold mb-3">Support</h5>
-            <ul>
-              <li className="mb-2"><a href="#" className="hover:text-white">Help Center</a></li>
-              <li className="mb-2"><a href="#" className="hover:text-white">Contact Us</a></li>
-              <li className="mb-2"><a href="#" className="hover:text-white">Account</a></li>
-            </ul>
+          <div className="text-xs text-center md:text-left">
+            ViteVue &copy; {new Date().getFullYear()}
           </div>
-          <div>
-            <h5 className="text-white font-bold mb-3">Legal</h5>
-            <ul>
-              <li className="mb-2"><a href="#" className="hover:text-white">Terms of Service</a></li>
-              <li className="mb-2"><a href="#" className="hover:text-white">Privacy Policy</a></li>
-              <li className="mb-2"><a href="#" className="hover:text-white">Cookie Policy</a></li>
-            </ul>
-          </div>
-        </div>
-        <div className="text-center text-gray-500 text-xs mt-8">
-          &copy; {new Date().getFullYear()} ViteVue. All rights reserved.
         </div>
       </footer>
     </div>
