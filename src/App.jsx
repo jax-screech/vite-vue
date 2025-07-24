@@ -6,6 +6,7 @@ import Profile from './pages/Profile'
 import ForgotPassword from './pages/ForgotPassword'
 import Landing from './pages/Landing'
 import WatchMovie from './pages/Warchmovies'
+import ResetPassword from './pages/ResetPassword'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/watch/:id" element={<WatchMovie />} />
+        <Route path='/reset-password' element={<ResetPassword />} />
       </Routes>
     </BrowserRouter>
   )

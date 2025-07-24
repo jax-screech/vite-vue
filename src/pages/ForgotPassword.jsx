@@ -1,89 +1,64 @@
+// src/pages/ForgotPassword.jsx
 import { useState } from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
 import background from '../assets/vitevuebg.jpeg'
+import logo from '../assets/vitevuue.webp' // Assuming you have a logo image
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('')
-  const [message, setMessage] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
-    setMessage(null)
+    setMessage('')
+    setError('')
 
     try {
-      await axios.post('http://127.0.0.1:8000/api/auth/forgot-password/', {
-        email,
-      })
-      setMessage('This email exists in our database, a password reset link has been sent.')
+      const res = await axios.post('http://127.0.0.1:8000/api/auth/forgot-password/', { email })
+      setMessage(res.data.message)
     } catch (err) {
-      setMessage('Sorry we could not find this email in our database.')
-    } finally {
-      setLoading(false)
+      console.error(err.response?.data || err.message)
+      setError(err.response?.data?.error || 'Something went wrong. Please try again.')
     }
   }
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center text-white"
-      style={{
-        backgroundImage: `url(${background})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-        {/* Header with logo on the right */}
-      <header className="flex justify-between items-center px-6 py-4 w-full absolute top-0 left-0">
-        <div></div>
+      className="min-h-screen flex items-center justify-center bg-cover bg-center text-white"
+      style={{ backgroundImage: `url(${background})` }}>
+      <header className="flex justify-between items-center px-6 py-4 w-full absolute top-0">
         <h1
-          className="text-3xl font-bold text-red-600 cursor-pointer"
-          onClick={() => navigate('/')}
+          className="text-3xl font-bold text-red-600 cursor-pointer flex items-center"
+          onClick={() => window.location.href = '/'}
         >
-          ViteVue
-        </h1>
+          <img src={logo} alt="ViteVue Logo" className="rounded-full h-15 w-13 shadow-lg border-2 border-red-600 mr-2" />
+          </h1>
       </header>
+      <form onSubmit={handleSubmit} className="bg-black p-8 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4">Forgot Password</h2>
 
-      <div className="bg-black bg-opacity-80 p-10 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-6 text-center">Forgot Your Password?</h2>
+        {message && <p className="text-green-500 mb-4">{message}</p>}
+        {error && <p className="text-red-500 mb-4">{error}</p>}
 
-        {message && (
-          <div className="bg-blue-600 text-white p-3 rounded mb-4 text-center">
-            {message}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Enter your registered email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:border-red-500"
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded"
-          >
-            {loading ? 'Sending...' : 'Send Reset Link'}
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-gray-300 text-sm">
-          Remembered your password?{' '}
-          <button
-            onClick={() => navigate('/login')}
-            className="text-red-500 hover:underline font-medium"
-          >
-            Sign In
-          </button>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="w-full p-2 rounded bg-gray-800 mb-4 border border-gray-600"
+        />
+        <button
+          type="submit"
+          className="w-full bg-red-600 hover:bg-red-700 p-2 rounded text-white font-bold"
+        >
+          Send Reset Link
+        </button>
+        <p className="mt-4 text-sm text-gray-400">
+          Remembered your password? <a href="/login" className="text-red-500 hover:underline">Sign In</a>
         </p>
-      </div>
+      </form>
     </div>
   )
 }

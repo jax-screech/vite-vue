@@ -1,58 +1,156 @@
-import { useParams } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { fetchMovieDetails, fetchMovieTrailer } from '../api/tmdb'
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const WatchMovie = () => {
-  const { id } = useParams()
-  const [movie, setMovie] = useState(null)
-  const [trailerKey, setTrailerKey] = useState(null)
+  const navigate = useNavigate();
+  const [genre, setGenre] = useState("");
+  const [search, setSearch] = useState("");
+  const [movies, setMovies] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [startedMovies, setStartedMovies] = useState([]);
+  const [selectedMovieUrl, setSelectedMovieUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const fetchData = () => {
+    const query = search.trim() === "" ? "movie" : search;
+    setLoading(true);
+
+    fetch(`https://www.omdbapi.com/?apikey=e5c142fb&s=${encodeURIComponent(query)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.Response === "True") {
+          let results = data.Search;
+
+          if (genre) {
+            const filtered = [];
+            const promises = results.map((movie) =>
+              fetch(`https://www.omdbapi.com/?apikey=e5c142fb&i=${movie.imdbID}`)
+                .then((res) => res.json())
+                .then((detail) => {
+                  if (detail.Genre && detail.Genre.toLowerCase().includes(genre.toLowerCase())) {
+                    filtered.push(movie);
+                  }
+                })
+            );
+
+            Promise.all(promises).then(() => {
+              setMovies(filtered);
+              setError(filtered.length ? "" : "No movies found for this genre.");
+              setLoading(false);
+            });
+          } else {
+            setMovies(results);
+            setError("");
+            setLoading(false);
+          }
+        } else {
+          setMovies([]);
+          setError(data.Error || "No movies found.");
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        setMovies([]);
+        setError("Failed to fetch movies.");
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
-    const loadMovie = async () => {
-      const details = await fetchMovieDetails(id)
-      const trailer = await fetchMovieTrailer(id)
-      setMovie(details)
-      setTrailerKey(trailer)
+    fetchData();
+  }, [genre]);
+
+  const handleSearchClick = () => {
+    fetchData();
+  };
+
+  const handleClearSearch = () => {
+    setSearch("");
+    setMovies([]);
+    setError("");
+  };
+
+  const handleMovieClick = (movie) => {
+    const dummyStreamUrl = "https://ww4.123moviesfree.net/season/the-flash-season-1-1533/";
+    setSelectedMovieUrl(dummyStreamUrl);
+
+    if (!startedMovies.some((m) => m.imdbID === movie.imdbID)) {
+      setStartedMovies([...startedMovies, movie]);
     }
+  };
 
-    loadMovie()
-  }, [id])
+  const markAsFinished = (movieId) => {
+    setStartedMovies((prev) => prev.filter((m) => m.imdbID !== movieId));
+  };
 
-  if (!movie) return <p className="text-white">Loading...</p>
+  const handleViewFavorites = () => {
+    setMovies(favorites);
+    setError("");
+  };
+
+  const toggleFavorite = (movie) => {
+    setFavorites((prev) =>
+      prev.some((m) => m.imdbID === movie.imdbID)
+        ? prev.filter((m) => m.imdbID !== movie.imdbID)
+        : [...prev, movie]
+    );
+  };
+
+  const closePlayer = () => {
+    setSelectedMovieUrl(null);
+  };
 
   return (
-    <div className="p-6 text-white bg-black min-h-screen">
-      <button
-        onClick={() => window.history.back()}
-        className="mb-4 text-white hover:text-gray-400 flex items-center"
-        aria-label="Go back"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-        Back
-      </button>
-      <h1 className="text-3xl font-bold mb-4">{movie.title}</h1>
-      {trailerKey ? (
-        <iframe
-          className="w-full h-[500px] mb-4"
-          src={`https://www.youtube.com/embed/${trailerKey}`}
-          title={movie.title}
-          frameBorder="0"
-          allowFullScreen
-        />
-      ) : (
-        <p>No trailer available.</p>
-      )}
-      <p>{movie.overview}</p>
-    </div>
-  )
-}
+    <div className="bg-gray-900 text-white min-h-screen flex flex-col">
+      <LoggedInNavbar
+        genre={genre}
+        setGenre={setGenre}
+        search={search}
+        setSearch={setSearch}
+        handleSearchClick={handleSearchClick}
+        handleClearSearch={handleClearSearch}
+        handleLogout={() => {
+          localStorage.clear();
+          navigate("/login");
+        }}
+        handleViewFavorites={handleViewFavorites}
+      />
 
-export default WatchMovie
+      <div className="flex-1 p-6 mt-20">
+        <ContinueWatchingList
+          startedMovies={startedMovies}
+          handleMovieClick={handleMovieClick}
+          markAsFinished={markAsFinished}
+        />
+
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <>
+            <h2 className="text-2xl font-semibold mb-4">Results</h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {movies.map((movie) => (
+                <MovieCard
+                  key={movie.imdbID}
+                  movie={movie}
+                  onClick={handleMovieClick}
+                  toggleFavorite={toggleFavorite}
+                  isFavorite={favorites.some((m) => m.imdbID === movie.imdbID)}
+                />
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+
+      {selectedMovieUrl && (
+        <MoviePlayer videoUrl={selectedMovieUrl} onClose={closePlayer} />
+      )}
+    </div>
+  );
+};
+
+export default WatchMovie;

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import background from '../assets/vitevuebg.jpeg'
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('')
@@ -36,7 +37,9 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white px-4">
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center text-white"
+      style={{ backgroundImage: `url(${background})` }}>
       <div className="bg-gray-800 p-6 rounded max-w-md w-full">
         <h2 className="text-2xl font-bold mb-4">Reset Your Password</h2>
 

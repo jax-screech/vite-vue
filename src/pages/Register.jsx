@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import background from '../assets/vitevuebg.jpeg'
+import logo from '../assets/vitevuue.webp' // Assuming you have a logo image
 
 const Register = () => {
   const navigate = useNavigate()
@@ -16,6 +17,10 @@ const Register = () => {
   })
 
   const [message, setMessage] = useState(null)
+
+  const handleGoogleLogin = () => {
+  alert('Google login is not implemented yet.')
+}
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -52,15 +57,15 @@ const Register = () => {
         backgroundPosition: 'center',
       }}
     >
-      {/* Header with logo on the right */}
+      {/* Header with logo on the left */}
       <header className="flex justify-between items-center px-6 py-4 w-full absolute top-0 left-0">
-        <div></div>
         <h1
-          className="text-3xl font-bold text-red-600 cursor-pointer"
+          className="text-3xl font-bold text-red-600 cursor-pointer flex items-center"
           onClick={() => navigate('/')}
         >
-          ViteVue
+          <img src={logo} alt="" className="rounded-full h-15 w-13 shadow-lg border-2 border-red-600 mr-2"/>
         </h1>
+        <div></div>
       </header>
 
       <div className="bg-black bg-opacity-80 p-10 rounded-lg shadow-md w-full max-w-md">
@@ -137,10 +142,16 @@ const Register = () => {
 
           <button
             type="submit"
-            className="w-full py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded"
+            className="w-full py-2 bg-red-600 hover:bg-red-900 text-white font-semibold rounded"
           >
             Sign Up
           </button>
+          <button
+          onClick={handleGoogleLogin}
+          className="w-full py-3 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
+        >
+          Create an account with Google
+        </button>
         </form>
 
         <p className="mt-6 text-center text-gray-300 text-sm">

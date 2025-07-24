@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import background from '../assets/vitevuebg.jpeg'
+import logo from '../assets/vitevuue.webp' // Assuming you have a logo image
 
-const Login = () => {
+const Login = () => { 
   const navigate = useNavigate()
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [message, setMessage] = useState(null)
@@ -38,11 +39,23 @@ const Login = () => {
     if (storedUser) navigate('/dashboard')
   }, [navigate])
 
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{ backgroundImage: `url(${background})` }}
     >
+      {/* Header with logo on the left */}
+      <header className="flex justify-between items-center px-6 py-4 w-full absolute top-0">
+        <h1
+          className="text-3xl font-bold text-red-600 cursor-pointer flex items-center"
+          onClick={() => navigate('/')}
+        >
+          <img src={logo} alt="" className="rounded-full h-15 w-13 shadow-lg border-2 border-red-600 mr-2" />
+        </h1>
+      </header>
+      
       <div className="bg-black bg-opacity-80 p-10 rounded-lg shadow-lg text-white w-full max-w-md">
         <h2 className="text-3xl font-bold mb-6 text-center">Login to ViteVue</h2>
 
@@ -62,30 +75,41 @@ const Login = () => {
             required
             className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded focus:outline-none"
           />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded focus:outline-none"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-2 top-2 text-gray-400 hover:text-white text-sm px-2 py-1"
+              tabIndex={-1}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
           <button
             type="submit"
-            className="w-full py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded"
+            className="w-full py-2 bg-red-600 hover:bg-red-900 text-white font-semibold rounded"
           >
             Login
           </button>
         <button
           onClick={handleGoogleLogin}
-          className="w-full py-3 bg-blue-400 hover:bg-blue-700 text-white font-bold rounded"
+          className="w-full py-3 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded"
         >
           Sign in with Google
         </button>
         </form>
 
-        <p className="mt-4 text-sm text-center text-gray-300">
+        <div>
+          <p className="mt-4 text-sm text-center text-gray-300">
           Don’t have an account?{' '}
           <button
             className="text-red-500 hover:underline"
@@ -93,7 +117,19 @@ const Login = () => {
           >
             Sign up
           </button>
-        </p>
+          </p>
+          
+          <p className="mt-2 text-sm text-center text-gray-300">
+            forgot your password?{' '}
+            <button
+              className="text-red-500 hover:underline"
+              onClick={() => navigate('/forgot-password')}
+            >
+              Reset your Password  
+            </button>
+          </p>
+        </div>
+        
       </div>
     </div>
   )
